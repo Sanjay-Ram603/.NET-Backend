@@ -43,22 +43,6 @@
   },
   {
     "ContainingType": "EmployeeDashboardAPI.Controllers.TasksController",
-    "Method": "DeleteTask",
-    "RelativePath": "api/Tasks/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "EmployeeDashboardAPI.Controllers.TasksController",
     "Method": "UpdateTask",
     "RelativePath": "api/Tasks/{id}",
     "HttpMethod": "PUT",
@@ -71,8 +55,24 @@
         "IsRequired": true
       },
       {
-        "Name": "updatedTask",
+        "Name": "task",
         "Type": "EmployeeDashboardAPI.Models.TaskModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EmployeeDashboardAPI.Controllers.TasksController",
+    "Method": "DeleteTask",
+    "RelativePath": "api/Tasks/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

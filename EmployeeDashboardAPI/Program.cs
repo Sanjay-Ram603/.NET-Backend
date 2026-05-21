@@ -1,3 +1,12 @@
+
+using EmployeeDashboardAPI.Interfaces;
+using EmployeeDashboardAPI.Repository;
+using EmployeeDashboardAPI.Services;
+
+
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +29,12 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddSingleton
+    <ITaskRepository, TaskRepository>();
+
+builder.Services.AddScoped
+    <ITaskService, TaskService>();
+
 var app = builder.Build();
 
 app.UseCors("AllowReactApp");
@@ -30,6 +45,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<
+    EmployeeDashboardAPI.Middleware.ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

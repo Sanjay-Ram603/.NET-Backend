@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EmployeeDashboardAPI.Interfaces;
 using EmployeeDashboardAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeDashboardAPI.Controllers
 {
@@ -7,111 +8,62 @@ namespace EmployeeDashboardAPI.Controllers
     [Route("api/[controller]")]
     public class TasksController : ControllerBase
     {
-        
-        private static List<TaskModel> tasks = new List<TaskModel>
+        private readonly ITaskService _taskService;
+
+        public TasksController(
+            ITaskService taskService
+        )
         {
-            new TaskModel
-            {
-                Id = 1,
-                Title = "Create Login Page",
-                Status = "Completed",
-                Priority = "High"
-            },
+            _taskService = taskService;
+        }
 
-            new TaskModel
-            {
-                Id = 2,
-                Title = "Implement Sidebar",
-                Status = "In Progress",
-                Priority = "Medium"
-            },
-
-            new TaskModel
-            {
-                Id = 3,
-                Title = "Responsive UI",
-                Status = "Pending",
-                Priority = "High"
-            },
-
-            new TaskModel
-            {
-                Id = 4,
-                Title = "API Integration",
-                Status = "Completed",
-                Priority = "Low"
-            }
-        };
-
-        
         [HttpGet]
         public IActionResult GetTasks(string? status)
         {
-            var filteredTasks = tasks;
+            var tasks = _taskService.GetTasks();
 
             if (!string.IsNullOrEmpty(status))
             {
-                filteredTasks = tasks
+                tasks = tasks
                     .Where(t =>
                         t.Status.ToLower() ==
-                        status.ToLower())
+                        status.ToLower()
+                    )
                     .ToList();
             }
 
-            return Ok(filteredTasks);
+            return Ok(tasks);
         }
-
 
         [HttpPost]
         public IActionResult AddTask(
-     [FromBody] TaskModel task)
+            TaskModel task
+        )
         {
-            if (task == null)
-            {
-                return BadRequest();
-            }
-
-            tasks.Add(task);
+            _taskService.AddTask(task);
 
             return Ok(task);
         }
 
+        [HttpPut("{id}")]
+        public IActionResult UpdateTask(
+            int id,
+            TaskModel task
+        )
+        {
+            task.Id = id;
+
+            _taskService.UpdateTask(task);
+
+            return Ok(task);
+        }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteTask(int id)
         {
-            var task =
-                tasks.FirstOrDefault(t => t.Id == id);
-
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            tasks.Remove(task);
+            _taskService.DeleteTask(id);
 
             return Ok();
-        }
-
-       
-        [HttpPut("{id}")]
-        public IActionResult UpdateTask(
-            int id,
-            TaskModel updatedTask)
-        {
-            var task =
-                tasks.FirstOrDefault(t => t.Id == id);
-
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            task.Title = updatedTask.Title;
-            task.Status = updatedTask.Status;
-            task.Priority = updatedTask.Priority;
-
-            return Ok(task);
         }
     }
 }
